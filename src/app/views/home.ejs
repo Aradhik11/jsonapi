@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <p>create audio</p>
+    <form action="/create" method="post" enctype="multipart/form-data">
+        <p><input type="text" name="title" placeholder="title"></p>
+        <p><input type="text" name="firstname" placeholder="firstname"></p>
+        <p><input type="text" name="lastname" placeholder="lastname"></p>
+        <p><input type="file" name="file"></p>
+        <p><button type="submit">submit</button></p>
+    </form>
+
+    <p>delete audio</p>
+    <%  audios.forEach(function(audio){ %>
+        <h3>title: <%=audio.title%></h3>
+        <p><%=audio.firstname%> <%=audio.lastname%></p>
+        <audio controls>
+            <source src="<%= audio.audiourl %>" type="audio/mp3">
+            Your browsrer does not support the audio tag
+        </audio>
+        <form action="/delete-one/<%=audio._id%>" method="post">
+            <button>delete</button>
+        </form>
+    <% }) %>
+    
+
+</body>
+</html>
