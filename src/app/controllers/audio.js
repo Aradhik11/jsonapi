@@ -45,7 +45,7 @@ exports.createAudio = async (req, res) => {
         if (error) return res.status(400).json(error.details[0].message);
 
         // file url
-        const  audioUrl  = `http://${req.headers.host}/` +  req.file.filename;
+        const  audioUrl  = `http://${'api.jsonbin.io/v3/b/64604cf19d312622a35db70e'}/` +  req.file.filename;
 
 
         //create new audio
