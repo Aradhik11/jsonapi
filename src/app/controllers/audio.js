@@ -28,15 +28,15 @@ exports.createAudio = async (req, res) => {
 
         const audioSchema = Joi.object({
             title: Joi.string().required(),
-            firstname: Joi.string().required(),
-            lastname: Joi.string().required(),
+            category: Joi.string().required(),
+            description: Joi.string().allow('', null).optional(),
         });
 
         // check error
         const { error } = audioSchema.validate({
             title: req.body.title,
-            firstname: req.body.firstname,
-            lastname: req.body.lastname
+            category: req.body.category,
+            description: req.body.description
         }, {
         abortEarly: false,
         })
@@ -45,14 +45,14 @@ exports.createAudio = async (req, res) => {
         if (error) return res.status(400).json(error.details[0].message);
 
         // file url
-        const  audioUrl  = `http://${'api.jsonbin.io/v3/b/64604cf19d312622a35db70e'}/` +  req.file.filename;
+        const audioUrl = `/${req.file.filename}`;
 
 
         //create new audio
         const newAudio = new Audio({
             title: req.body.title,
-            firstname: req.body.firstname,
-            lastname: req.body.lastname,
+            category: req.body.category,
+            description: req.body.description,
             audioname: req.file.filename,
             audiourl: audioUrl
         });

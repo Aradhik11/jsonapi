@@ -1,35 +1,351 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>dShfii Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-dark: rgba(30, 41, 59, 0.7);
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: radial-gradient(circle at top right, #1e293b, #0f172a);
+        }
+
+        header {
+            padding: 2rem 5%;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-weight: 700;
+            font-size: 1.75rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #60a5fa, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stats-badge {
+            background: var(--card-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .stats-badge span {
+            color: var(--text-main);
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+            padding: 2rem 5%;
+            flex: 1;
+        }
+
+        .card {
+            background: var(--card-dark);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.75rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: var(--text-main);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        input[type="file"] {
+            border: 1px dashed var(--border);
+            padding: 1.5rem;
+            text-align: center;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        input[type="file"]::file-selector-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            margin-right: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn {
+            width: 100%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 0.875rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Recordings List */
+        .recordings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .recording-card {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .recording-card:hover {
+            transform: translateY(-2px);
+            background: rgba(30, 41, 59, 0.6);
+        }
+
+        .recording-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .recording-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+            word-wrap: break-word;
+        }
+
+        .recording-category {
+            font-size: 0.75rem;
+            background: rgba(96, 165, 250, 0.2);
+            color: #60a5fa;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .recording-desc {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .audio-player-container {
+            margin-bottom: 1rem;
+        }
+
+        audio {
+            width: 100%;
+            height: 36px;
+            border-radius: 6px;
+        }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            width: 100%;
+        }
+
+        .btn-delete:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-    <p>create audio</p>
-    <form action="/create" method="post" enctype="multipart/form-data">
-        <p><input type="text" name="title" placeholder="title"></p>
-        <p><input type="text" name="firstname" placeholder="firstname"></p>
-        <p><input type="text" name="lastname" placeholder="lastname"></p>
-        <p><input type="file" name="file"></p>
-        <p><button type="submit">submit</button></p>
-    </form>
+    <header>
+        <h1>dShafii Admin API</h1>
+        <div class="stats-badge">
+            <span>
+                <%= audios.length %>
+            </span> total lectures indexed
+        </div>
+    </header>
 
-    <p>delete audio</p>
-    <%  audios.forEach(function(audio){ %>
-        <h3>title: <%=audio.title%></h3>
-        <p><%=audio.firstname%> <%=audio.lastname%></p>
-        <audio controls>
-            <source src="<%= audio.audiourl %>" type="audio/mp3">
-            Your browsrer does not support the audio tag
-        </audio>
-        <form action="/delete-one/<%=audio._id%>" method="post">
-            <button>delete</button>
-        </form>
-    <% }) %>
-    
+    <div class="dashboard-container">
+
+        <!-- Upload Form Sidebar -->
+        <aside class="sidebar">
+            <div class="card">
+                <h2>Upload New Lecture</h2>
+                <form action="/create" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="title">Lecture Title</label>
+                        <input type="text" id="title" name="title" class="form-control" required
+                            placeholder="e.g. Tafsir Surah Al-Baqarah">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <input type="text" id="category" name="category" class="form-control" required
+                            placeholder="e.g. Tafsir, Fiqh, Seerah">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Short Description (Optional)</label>
+                        <input type="text" id="description" name="description" class="form-control"
+                            placeholder="Brief summary of the lecture">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="file">Audio File (MP3)</label>
+                        <input type="file" id="file" name="file" class="form-control" accept="audio/mp3, audio/mpeg"
+                            required>
+                    </div>
+
+                    <button type="submit" class="btn">Upload Lecture</button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Recordings View Area -->
+        <main class="content">
+            <div class="card">
+                <h2>Indexed Lectures</h2>
+
+                <% if(audios.length===0) { %>
+                    <p style="color: var(--text-muted); text-align: center; padding: 2rem;">No lectures have been
+                        uploaded yet.</p>
+                    <% } else { %>
+                        <div class="recordings-grid">
+                            <% audios.forEach(function(audio){ %>
+                                <div class="recording-card">
+                                    <div class="recording-header">
+                                        <div>
+                                            <div class="recording-category">
+                                                <%= audio.category || 'Uncategorized' %>
+                                            </div>
+                                            <h3 class="recording-title">
+                                                <%= audio.title %>
+                                            </h3>
+                                        </div>
+                                    </div>
+
+                                    <% if(audio.description) { %>
+                                        <p class="recording-desc">
+                                            <%= audio.description %>
+                                        </p>
+                                        <% } else { %>
+                                            <p class="recording-desc"><em>No description provided.</em></p>
+                                            <% } %>
+
+                                                <div class="audio-player-container">
+                                                    <audio controls preload="metadata">
+                                                        <source src="/<%= audio.audioname %>" type="audio/mpeg">
+                                                        Your browser does not support the audio element.
+                                                    </audio>
+                                                </div>
+
+                                                <form action="/delete-one/<%= audio._id %>" method="post"
+                                                    style="margin-top: auto;">
+                                                    <button class="btn btn-delete" type="submit">Delete Lecture</button>
+                                                </form>
+                                </div>
+                                <% }) %>
+                        </div>
+                        <% } %>
+            </div>
+        </main>
+
+    </div>
 
 </body>
+
 </html>

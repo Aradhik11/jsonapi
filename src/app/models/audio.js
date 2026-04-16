@@ -6,13 +6,13 @@ const AudioSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    firstname: {
+    category: {
       type: String,
       required: true
     },
-    lastname: {
+    description: {
       type: String,
-      required: true
+      required: false
     },
     audioname: {
       type: String,
