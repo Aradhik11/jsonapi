@@ -30,6 +30,11 @@ const AudioSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    duration: {
+      type: Number,
+      required: false,
+      default: 0
+    },
   },
   { timestamps: true }
 );

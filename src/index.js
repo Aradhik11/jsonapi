@@ -24,7 +24,11 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 
 // enabling helmet for additional layer of security
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+    hsts: false,
+}));
 
 // using bodyParser to parse JSON bodies into JS objects
 app.use(bodyParser.urlencoded({ extended: true }));

@@ -67,7 +67,8 @@ exports.createAudio = async (req, res) => {
             description: req.body.description,
             audioname: req.file.filename,
             audiourl: result.secure_url,
-            cloudinary_id: result.public_id
+            cloudinary_id: result.public_id,
+            duration: result.duration || 0
         });
 
         // save audio
