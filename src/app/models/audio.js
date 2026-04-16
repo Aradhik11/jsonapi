@@ -14,11 +14,19 @@ const AudioSchema = new mongoose.Schema(
       type: String,
       required: false
     },
+    artist: {
+      type: String,
+      required: true
+    },
     audioname: {
       type: String,
       required: true
     },
     audiourl: {
+      type: String,
+      required: true
+    },
+    cloudinary_id: {
       type: String,
       required: true
     },

@@ -3,7 +3,6 @@
 // middleware
 const upload = require('../middlewares/upload');
 const isAudioFile = require('../middlewares/isAudioFile');
-const remove = require('../middlewares/delete');
 
 
 
@@ -30,7 +29,7 @@ module.exports =  (app) => {
         .post(upload.single('file'), isAudioFile,  audioController.createAudio);
 
     app.route('/delete-one/:audioId')
-        .post(remove, audioController.deleteAudio);
+        .post(audioController.deleteAudio);
 
     app.route('/read-all')
         .get(audioController.readAllAudio);

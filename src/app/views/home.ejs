@@ -273,9 +273,15 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="category">Category</label>
+                        <label for="category">Category / Folder</label>
                         <input type="text" id="category" name="category" class="form-control" required
                             placeholder="e.g. Tafsir, Fiqh, Seerah">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="artist">Artist / Speaker</label>
+                        <input type="text" id="artist" name="artist" class="form-control" required
+                            placeholder="e.g. Sheikh So-and-so">
                     </div>
 
                     <div class="form-group">
@@ -315,6 +321,9 @@
                                             <h3 class="recording-title">
                                                 <%= audio.title %>
                                             </h3>
+                                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                                                By <%= audio.artist || 'Unknown Artist' %>
+                                            </p>
                                         </div>
                                     </div>
 
@@ -328,7 +337,7 @@
 
                                                 <div class="audio-player-container">
                                                     <audio controls preload="metadata">
-                                                        <source src="/<%= audio.audioname %>" type="audio/mpeg">
+                                                        <source src="<%= audio.audiourl %>" type="audio/mpeg">
                                                         Your browser does not support the audio element.
                                                     </audio>
                                                 </div>

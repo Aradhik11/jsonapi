@@ -1,6 +1,7 @@
 const Joi = require('joi');
 const Audio = require('../models/audio');
-const upload = require('../middlewares/upload');
+const cloudinary = require('../config/cloudinary');
+const fs = require('fs');
 
 exports.homePage = async (req, res) => {   
 
@@ -29,6 +30,7 @@ exports.createAudio = async (req, res) => {
         const audioSchema = Joi.object({
             title: Joi.string().required(),
             category: Joi.string().required(),
+            artist: Joi.string().required(),
             description: Joi.string().allow('', null).optional(),
         });
 
@@ -36,6 +38,7 @@ exports.createAudio = async (req, res) => {
         const { error } = audioSchema.validate({
             title: req.body.title,
             category: req.body.category,
+            artist: req.body.artist,
             description: req.body.description
         }, {
         abortEarly: false,
@@ -44,22 +47,35 @@ exports.createAudio = async (req, res) => {
         // return error from fileds
         if (error) return res.status(400).json(error.details[0].message);
 
-        // file url
-        const audioUrl = `/${req.file.filename}`;
+        if (!req.file) {
+            return res.status(400).json("Please upload an audio file");
+        }
 
+        // Upload to Cloudinary
+        const result = await cloudinary.uploader.upload(req.file.path, {
+            resource_type: "video", // Cloudinary treats audio as video resource type
+            folder: `Lectures/${req.body.category}`,
+            use_filename: true,
+            unique_filename: true,
+        });
 
-        //create new audio
+        // Create new audio with Cloudinary data
         const newAudio = new Audio({
             title: req.body.title,
             category: req.body.category,
+            artist: req.body.artist,
             description: req.body.description,
             audioname: req.file.filename,
-            audiourl: audioUrl
+            audiourl: result.secure_url,
+            cloudinary_id: result.public_id
         });
 
-        
-        //save audio and respond
+        // save audio
         const audio = await newAudio.save();
+
+        // Delete local temporary file
+        fs.unlinkSync(req.file.path);
+
         res.redirect("/");
 
 
@@ -158,10 +174,23 @@ exports.deleteAudio = async (req, res) => {
     const audioId  = req.params.audioId;
 
     try {
-        const audio = await Audio.deleteOne({ _id: audioId });
-            res.redirect("/");
+        const audio = await Audio.findById(audioId);
+        if (!audio) {
+            return res.status(404).json({ message: "Audio not found" });
+        }
+
+        // Delete from Cloudinary
+        if (audio.cloudinary_id) {
+            await cloudinary.uploader.destroy(audio.cloudinary_id, { resource_type: "video" });
+        }
+
+        // Delete from MongoDB
+        await Audio.deleteOne({ _id: audioId });
+        
+        res.redirect("/");
     } catch (err) {
-            res.status(500).json(err);
+        console.log(err);
+        res.status(500).json(err);
     }
     
 }
